@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>spspbpwlrtlrslrdlrmlrtlrsalfsdtstsjsdtataostiatijs</Title>
+      <Shortcut>spspbpwlrtlrslrdlrmlrtlrsalfsdtstsjsdtataostiatijs</Shortcut>
+      <Description>Locks</Description>
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[
+SELECT  p.spid ,
+        p.blocked ,
+        p.waittime ,
+        l.resource_type ,
+        l.resource_subtype ,
+        l.resource_description ,
+        l.request_mode ,
+        l.request_type ,
+        l.request_status ,
+        a.* ,
+        l.*
+FROM    sys.dm_tran_session_transactions s
+        JOIN sys.dm_tran_active_transactions a ON s.transaction_id = a.transaction_id
+        JOIN sys.sysprocesses p ON p.spid = s.session_id
+        JOIN sys.dm_tran_locks l ON l.request_session_id = p.spid
+WHERE   p.status IN ( 'suspended', 'runnable', 'running' )
+        AND p.blocked > 0
+        AND l.request_status <> 'GRANT'
+        OR ( p.blocked > 0
+             OR p.spid IN ( SELECT  blocked
+                            FROM    sys.sysprocesses
+                            WHERE   blocked <> 0 )
+           )
+ORDER BY waittime; ]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

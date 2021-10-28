@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>SSRSLongRunning</Title>
+      <Shortcut>SSRSLongRunning</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[--SSRS Long Running Transactions
+ 
+USE ReportServer
+
+SELECT e.instancename, 
+       catalog.PATH, 
+       catalog.name, 
+       e.username, 
+       e.timestart, 
+       e.timeend, 
+       Datediff(mi, e.timestart, e.timeend) AS 'Minutes', 
+       e.timedataretrieval, 
+       e.timeprocessing, 
+       e.timerendering, 
+       e.[RowCount], 
+       users_1.username 
+       AS createdby, 
+       CONVERT(VARCHAR(10), catalog.creationdate, 101) 
+       AS 'Creation Date', 
+       users.username 
+       AS modifiedby, 
+       CONVERT(VARCHAR(10), catalog.modifieddate, 101) 
+       AS 'Modified Date' 
+FROM   executionlogstorage e  
+       INNER JOIN catalog 
+         ON e.reportid = catalog.itemid 
+       INNER JOIN users 
+         ON catalog.modifiedbyid = users.userid 
+       INNER JOIN users AS users_1 
+         ON catalog.createdbyid = users_1.userid 
+WHERE  ( e.timestart > '03/31/2012' ) 
+       AND ( e.timestart <= '04/02/2012' ) 
+       AND  Datediff(mi, e.timestart, e.timeend) > 5 
+       AND catalog.name <> '' 
+ORDER  BY 'Minutes' DESC  
+ ]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

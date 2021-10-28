@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>commandlog</Title>
+      <Shortcut>commandlog</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT TOP 1000 [ID]
+	  ,DATEDIFF(ms,StartTime,EndTime) 'Duration ms'
+      ,[DatabaseName]
+      ,[SchemaName]
+      ,[ObjectName]
+      ,[ObjectType]
+      ,[IndexName]
+	  ,REPLACE(substring(cast(ExtendedInfo as varchar(1000)),CHARINDEX('tion>',cast(ExtendedInfo as varchar(1000)))+5,7),'<','') + '%' 'Fragmentation'
+      ,[CommandType]
+      ,[Command]
+      ,[IndexType]
+      ,[StatisticsName]
+      ,[PartitionNumber]
+      ,[ExtendedInfo]
+      ,[StartTime]
+      ,[EndTime]
+      ,[ErrorNumber]
+      ,[ErrorMessage]
+  FROM [master].[dbo].[CommandLog]
+   order by EndTime desc ]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

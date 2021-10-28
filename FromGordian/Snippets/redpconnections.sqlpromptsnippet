@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>redpconnections</Title>
+      <Shortcut>redpconnections</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[SELECT * FROM sys.sysprocesses p
+WHERE spid > 50
+AND cpu = 0
+AND p.Status NOT IN ( 'running', 'runnable', 'suspended' )
+AND (hostname = 'CTN-RED-01' OR uid = 22)   
+AND (p.net_address = '005056AA00E7' OR uid = 22)         
+ORDER BY last_batch 
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

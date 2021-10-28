@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>tracelog</Title>
+      <Shortcut>tracelog</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[/****** Script for SelectTopNRows command from SSMS  ******/
+SELECT [RowNumber]
+,e.name
+      --,[EventClass]
+      ,[Duration]
+	  ,t.objectName
+	  ,o.name
+      ,[EndTime]
+      ,[Mode]
+      ,[ObjectID]
+      ,[TextData]
+      ,[ApplicationName]
+      ,[CPU]
+      ,[ClientProcessID]
+      ,[DatabaseName]
+      ,[LoginName]
+      ,[NTUserName]
+      ,[Reads]
+      ,[SPID]
+      ,[StartTime]
+      ,[Writes]
+      ,[BinaryData]
+      ,t.[Type]
+      ,[BigintData1]
+      ,[DatabaseID]
+      ,[EventSequence]
+      ,[GroupID]
+      ,[HostName]
+      ,[IntegerData2]
+      ,[IsSystem]
+      ,[LoginSid]
+      ,[NTDomainName]
+      ,[ObjectID2]
+      ,[OwnerID]
+      ,[RequestID]
+      ,[ServerName]
+      ,[SessionLoginName]
+      ,[TransactionID]
+      ,[Error]
+      ,[IntegerData]
+      ,[XactSequence]
+      ,[ObjectName]
+      ,[RowCounts]
+      ,[EventSubClass]
+  FROM [master].[dbo].[trc20160129] t
+  JOIN sys.trace_events e ON e.trace_event_id = t.eventclass
+  LEFT JOIN sys.objects o ON o.object_id = t.objectID
+  --WHERE e.name = 'SQLTransaction'
+  ORDER BY t.rownumber]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

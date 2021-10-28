@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>WhatChanged</Title>
+      <Shortcut>WhatChanged</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[DECLARE @dbnum INT = (select DB_ID(DB_NAME()))
+
+
+SELECT DISTINCT o.name 'TableName',i.name 'IndexName',i.fill_factor, o.modify_date,o.create_date, * FROM sys.objects o
+	JOIN sys.indexes i ON i.object_id = o.object_id
+	JOIN sys.dm_db_index_operational_stats(@dbnum, NULL, NULL, NULL) os ON os.index_id = i.index_id AND os.object_id = o.object_id
+	WHERE o.type <> 'S' AND i.name IS NOT NULL --AND o.name = 'ord_line'
+	ORDER BY o.modify_date desc]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

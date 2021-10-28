@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>blockingSPID</Title>
+      <Shortcut>blockingSPID</Shortcut>
+      <Description>blockingSPID</Description>
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[DECLARE @BlockingSpid INT;
+DECLARE @BlockedSpid INT;
+DECLARE @WaitTime INT; 
+DECLARE @sql VARCHAR(MAX);
+DECLARE @dbid INT;
+
+/********************************/
+/*  Find blockers and blockees  */
+/********************************/
+
+SELECT TOP 1
+        @BlockingSpid = blocking_session_id ,
+        @BlockedSpid = session_id ,
+        @WaitTime = wait_time / 1000
+FROM    sys.dm_exec_requests
+WHERE   session_id > 50
+        AND blocking_session_id <> 0
+GROUP BY blocking_session_id ,
+        session_id ,
+        wait_time
+ORDER BY ( wait_time / 1000 ) DESC; 
+
+IF @BlockingSpid IS NOT NULL    -- If there is blocking for more than the tolerance, continue
+    AND @BlockingSpid <> 0
+    AND @WaitTime >= 60  
+    BEGIN
+
+
+		SELECT   @BlockingSpid,
+				ca1.text ,
+                 DB_NAME(sp.dbid)
+        FROM    sys.sysprocesses sp WITH ( NOLOCK )
+                CROSS APPLY ( SELECT    text 'text'
+                              FROM      sys.dm_exec_sql_text(sp.sql_handle)
+                            ) ca1
+        WHERE   sp.spid = @BlockingSpid
+		END]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

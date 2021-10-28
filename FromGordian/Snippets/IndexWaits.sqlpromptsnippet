@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>IndexWaits</Title>
+      <Shortcut>IndexWaits</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[---  Indexes causing blocking
+SELECT  '[' + DB_NAME(ddios.[database_id]) + '].[' + su.[name] + '].['
+        + o.[name] + ']' AS [statement] ,
+        i.[name] AS 'index_name' ,
+        CAST (1.0 * ddios.[row_lock_wait_in_ms] / ddios.[row_lock_wait_count] AS DECIMAL(15,
+                                                              2)) / 1000 AS [avg_row_lock_wait_in_min] ,
+        ddios.[row_lock_count] 'row lock requests' ,
+        ddios.[row_lock_wait_count] 'row lock request waits',
+        CAST (100.0 * ddios.[row_lock_wait_count] / ( ddios.[row_lock_count] ) AS DECIMAL(5,
+                                                              2)) AS [%_waiting_for_lock] ,
+        ddios.[row_lock_wait_in_ms]
+FROM    sys.dm_db_index_operational_stats(10, NULL, NULL, NULL) ddios --(SELECT DB_ID(DB_NAME()))
+        INNER JOIN sys.indexes i ON ddios.[object_id] = i.[object_id]
+                                    AND i.[index_id] = ddios.[index_id]
+        INNER JOIN sys.objects o ON ddios.[object_id] = o.[object_id]
+        INNER JOIN sys.sysusers su ON o.[schema_id] = su.[uid]
+WHERE   ddios.row_lock_wait_count > 0
+        AND OBJECTPROPERTY(ddios.[object_id], 'IsUserTable') = 1
+        AND i.[index_id] > 0
+ORDER BY CAST (1.0 * ddios.[row_lock_wait_in_ms] / ddios.[row_lock_wait_count] AS DECIMAL(15,
+                                                              2)) / 1000 DESC ,
+        ddios.[row_lock_wait_count] DESC ,
+        su.[name] ,
+        o.[name] ,
+        i.[name];]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

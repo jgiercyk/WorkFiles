@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>connectivity</Title>
+      <Shortcut>connectivity</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[SELECT  CAST(record AS XML),*
+
+FROM    sys.dm_os_ring_buffers
+
+--WHERE   ring_buffer_type = 'RING_BUFFER_CONNECTIVITY'
+--AND 
+WHERE record LIKE '%<RecordTime>12/20/2015 3:4%']]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

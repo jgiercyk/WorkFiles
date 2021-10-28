@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>blockingTasks</Title>
+      <Shortcut>blockingTasks</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[SELECT TOP 1000 [RowID]
+      ,[CreateDate]
+      ,[WaitTimeMs]
+      ,[BlockingSPID]
+      ,[BlockingStatus]
+      ,[BlockingCommand]
+      ,[BlockingSql]
+      ,[BlockingDatabase]
+      ,[BlockedSPID]
+      ,[BlockedStatus]
+      ,[BlockedCommand]
+      ,[BlockedSql]
+      ,[BlockedDatabase]
+  FROM [master].[dbo].[blockingTasks]
+  ORDER BY rowid desc]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

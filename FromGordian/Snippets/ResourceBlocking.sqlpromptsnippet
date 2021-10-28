@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>ResourceBlocking</Title>
+      <Shortcut>ResourceBlocking</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[DECLARE @Interval INT = 60000  -- threshhold for waittime in milliseconds
+
+DECLARE @MaxWait INT
+DECLARE @dbname VARCHAR(4000) = ( SELECT TOP 1
+                                            DB_NAME(sp.dbid)
+                                  FROM      sys.sysprocesses sp WITH ( NOLOCK )
+                                  WHERE     sp.blocked <> '0'
+                                );
+DECLARE @blockingSPID INT; 
+DECLARE @sql VARCHAR(4000);
+
+
+
+SELECT  @blockingSPID = spid ,
+        @dbname = DB_NAME(dbid)
+FROM    sys.sysprocesses s
+WHERE   waittype = CAST(0x0000 AS BINARY)   
+        AND spid IN ( SELECT    blocked
+                      FROM      sys.sysprocesses );
+
+SET @MaxWait = ( SELECT MAX(waittime)
+                 FROM   sys.sysprocesses
+                 WHERE  waittype <> CAST(0x0000 AS BINARY)
+                        AND blocked <> '0'
+               );
+
+
+SET @sql = 'USE ' + @dbname +
+
+' SELECT pr.spid ''SPID'',  
+		pr.blocked ''Blocked'',
+		pr.waittime/1000 ''WaitTimeInSec'',
+		NULL ''Database'' ,
+		OBJECT_NAME(pa.object_id) ''BlockedResource'' ,
+		cmd ''Command'',
+		status ''Status'',
+		pr.lastwaittype ''WaitType'',
+		hostname ''Hostname'',
+		loginame ''Login'',
+		nt_username ''Username'',
+		sql_handle ''sql_handle''
+INTO #temp
+FROM    sys.sysprocesses pr
+        LEFT JOIN sys.partitions pa ON CAST(pa.partition_id AS VARCHAR) = ( SUBSTRING(REPLACE(waitresource,
+                                                              ''KEY: '', ''''),
+                                                              ( CHARINDEX('':'',
+                                                              REPLACE(waitresource,
+                                                              ''KEY: '', ''''))
+                                                              + 1 ), 17) )
+WHERE   (waittype <> CAST(0x0000 AS BINARY)
+        AND spid > 50
+		AND pa.partition_id IS NOT NULL) OR (pr.spid = ' + CAST(@BlockingSpid AS VARCHAR) + ')   --OR (pr.blocking <> ''0'')
+		order by pr.waittime;
+
+
+
+USE master
+
+INSERT blockedResources
+	SELECT 
+	GETDATE() ''DateTime'',
+	ROW_NUMBER() OVER(ORDER BY WaitTimeInSec) ''RowNumber'',
+	SPID,
+	Blocked,
+	WaitTimeInSec,  
+	 ''' + @dbname + ''' ''Database'',
+	BlockedResource,
+	Command,
+	Status,
+	WaitType,
+	Hostname,
+	Login,
+	Username,
+	at.name ''Transaction'',
+	ca1.text ''Sql Statement''  
+	FROM #Temp t
+	LEFT join sys.dm_tran_session_transactions st on t.SPID = st.session_id
+	LEFT JOIN sys.dm_tran_active_transactions at ON st.transaction_id = at.transaction_id
+	CROSS APPLY ( SELECT    text ''text''
+					FROM      sys.dm_exec_sql_text(t.sql_handle)
+				) ca1;
+'
+
+ 
+ SELECT @sql   
+
+ IF @MaxWait >= @Interval
+    BEGIN
+        EXEC (@sql);    
+    END;]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

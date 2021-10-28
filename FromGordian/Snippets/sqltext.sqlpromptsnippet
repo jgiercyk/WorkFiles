@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>sqltext</Title>
+      <Shortcut>sqltext</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[
+SELECT    text 'sql'
+                              FROM      sys.fn_get_sql(0x0100050013594622B0370DF60200000000000000)]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
