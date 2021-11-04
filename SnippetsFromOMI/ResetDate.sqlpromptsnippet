@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>ResetDate</Title>
+      <Shortcut>ResetDate</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[USE ETL
+
+UPDATE dbo.MSAgentJobSchedule
+SET JobStartDT = NULL
+WHERE ETL = 'HomeOwnerBasis'
+AND Active = 'Y' and JobStartDt is not NULL]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

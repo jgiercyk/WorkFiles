@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>FindUserLogonPortal</Title>
+      <Shortcut>FindUserLogonPortal</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[; WITH cte AS (
+       SELECT e.UserID, e.PASSWORD, rt.Name As RoleType
+       FROM Portal.dbo.Users u
+       JOIN PortalETL.dbo.USERID e ON u.LoginName=e.USERID
+       JOIN UserRoles ur ON u.Id=ur.UserId AND ur.Enabled=1
+       JOIN RoleType rt ON ur.RoleTypeId=rt.Id
+       WHERE u.Enabled=1
+                 AND u.Id IN (SELECT UserId FROM UserRoles)
+                 AND LTRIM(e.PASSWORD) <> ''
+)
+SELECT c.UserId
+       , c.Password
+       , MAX(CASE WHEN c.RoleType='Service Accounts' THEN 'Y' ELSE 'N' END) AS [Service Accounts]
+       , MAX(CASE WHEN c.RoleType='Write Business' THEN 'Y' ELSE 'N' END) AS [Write New Business]
+       , MAX(CASE WHEN c.RoleType='Agency Admin' THEN 'Y' ELSE 'N' END) AS [AgencyAdmin]
+       , MAX(CASE WHEN c.RoleType='Reports' THEN 'Y' ELSE 'N' END) AS [Base Reports]
+       , MAX(CASE WHEN c.RoleType='Admin Reports' THEN 'Y' ELSE 'N' END) AS [Admin Reports]
+FROM cte c
+WHERE c.UserId LIKE '%0721%' 
+GROUP BY c.UserId, c.Password
+ORDER BY c.UserId
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

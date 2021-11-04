@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>AgentsMainframe</Title>
+      <Shortcut>AgentsMainframe</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[
+SELECT mm.AGENT_NO 'Agent_No',
+       mm.COMML_UW 'Name',
+       mm.COMML_UW_CODE 'Code',
+	   'Commercial Lines Underwriter' 'UnderwriterType',
+       m.NAME_1 'Agency',
+       *
+FROM PortalETL.dbo.MarketingMaster mm
+    JOIN PortalETL.dbo.Master m
+        ON m.AGENT_NO = mm.AGENT_NO
+WHERE mm.COMML_UW_CODE <> ''
+UNION
+SELECT mm.AGENT_NO,
+       mm.PERS_UW,
+       mm.PERS_UW_CODE,
+	   'Personal Lines Underwriter',
+       m.NAME_1,
+       *
+FROM PortalETL.dbo.MarketingMaster mm
+    JOIN PortalETL.dbo.Master m
+        ON m.AGENT_NO = mm.AGENT_NO
+WHERE mm.PERS_UW_CODE <> ''
+UNION
+SELECT mm.AGENT_NO,
+       '',
+       mm.COMML_UW1_CODE,
+	   'Commercial Lines Underwriting Assistant',
+       m.NAME_1,
+       *
+FROM PortalETL.dbo.MarketingMaster mm
+    JOIN PortalETL.dbo.Master m
+        ON m.AGENT_NO = mm.AGENT_NO
+WHERE mm.COMML_UW1_CODE <> ''
+UNION
+SELECT mm.AGENT_NO,
+       '',
+       mm.PERS_UW1_CODE,
+	   'Personal Lines Underwriting Assistant',
+       m.NAME_1,
+       *
+FROM PortalETL.dbo.MarketingMaster mm
+    JOIN PortalETL.dbo.Master m
+        ON m.AGENT_NO = mm.AGENT_NO
+WHERE mm.PERS_UW1_CODE <> ''
+UNION
+SELECT mm.AGENT_NO,
+       '',
+       mm.F_GRP_CODE,
+	   'Farm/Agribusiness Underwriter',
+       m.NAME_1,
+       *
+FROM PortalETL.dbo.MarketingMaster mm
+    JOIN PortalETL.dbo.Master m
+        ON m.AGENT_NO = mm.AGENT_NO
+WHERE mm.F_GRP_CODE <> ''
+UNION
+SELECT mm.AGENT_NO,
+       '',
+       mm.B_GRP_CODE,
+	   'Farm/Agribusiness Underwriting Assistant',
+       m.NAME_1,
+       *
+FROM PortalETL.dbo.MarketingMaster mm
+    JOIN PortalETL.dbo.Master m
+        ON m.AGENT_NO = mm.AGENT_NO
+WHERE mm.B_GRP_CODE <> ''
+ORDER BY mm.AGENT_NO
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

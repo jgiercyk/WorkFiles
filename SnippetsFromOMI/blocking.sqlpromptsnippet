@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>blocking</Title>
+      <Shortcut>blocking</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[SELECT  p.spid 'Process' ,
+                p.blocked 'BlkBy' ,
+                p.status 'Status' ,
+                p.waittime 'WaitTime' ,
+                p.cpu 'CPU' ,
+                p.lastwaittype 'WaitType' ,
+                p.hostname 'Host' ,
+                db.name 'Database' ,
+                p.loginame 'User' ,
+                p.program_name 'Program' ,
+                ca.sql 'SQL'
+        FROM    sys.sysprocesses p
+                JOIN sys.databases db ON p.dbid = db.database_id
+                CROSS APPLY ( SELECT    text 'sql'
+                              FROM      sys.fn_get_sql(p.sql_handle)
+                            ) ca
+        WHERE   spid > 50
+                AND p.Status IN ( 'running', 'runnable', 'suspended' )
+				OR (spid IN (SELECT p.blocked FROM sys.sysprocesses p))
+		ORDER BY p.waittime desc]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

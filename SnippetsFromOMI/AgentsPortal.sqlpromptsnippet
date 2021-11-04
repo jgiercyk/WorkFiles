@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>AgentsPortal</Title>
+      <Shortcut>AgentsPortal</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[    SELECT u.Name 'UnderwriterName',
+           u.Id 'UnderwriterID',
+           u.Code 'UnderwriterCode',
+           u.ImageRightId 'ImageRightID',
+           ut.Name 'UnderwriterType',
+           au.SecondaryAgencyId 'AgencyID',
+           am.Name 'AgencyName',
+		   sa.code 'AgentNo' --,* 
+    FROM portal.dbo.Underwriters u
+        JOIN portal.dbo.AgencyUnderwriters au
+            ON u.Id = au.UnderwriterId
+        JOIN portal.dbo.AgencyMaster am
+            ON au.SecondaryAgencyId = am.Id
+        JOIN portal.dbo.UnderwriterType ut
+            ON ut.Id = au.UnderwriterTypeId
+		JOIN portal.dbo.SecondaryAgencies sa ON au.SecondaryAgencyId = sa.Id
+    ORDER BY au.SecondaryAgencyId;]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>ADOrgUnits</Title>
+      <Shortcut>ADOrgUnits</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[  SELECT DISTINCT SUBSTRING([DistinguishedName],CHARINDEX('OU=',[DistinguishedName]),(CHARINDEX('DC=',[DistinguishedName]) - 1) - CHARINDEX('OU=',[DistinguishedName])) 'OUs'
+  ,[UserPrincipalName]
+  FROM [DBA_MON].[dbo].[ADUsers]
+  WHERE DistinguishedName LIKE '%OU=%']]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

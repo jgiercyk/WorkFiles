@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>SSRSCatalog</Title>
+      <Shortcut>SSRSCatalog</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[SELECT DISTINCT catalog.PATH, 
+                           catalog.name, 
+                           users.username AS [Created By],  
+                           catalog.creationdate, 
+                           users_1.username AS [Modified By], 
+                           catalog.modifieddate 
+FROM catalog 
+        INNER JOIN users ON catalog.createdbyid = users.userid  
+INNER JOIN users AS users_1 ON catalog.modifiedbyid = users_1.userid 
+INNER JOIN executionlogstorage 
+ON catalog.itemid = executionlogstorage.reportid 
+WHERE ( catalog.name <> '' )]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

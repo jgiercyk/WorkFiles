@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>S3Copy</Title>
+      <Shortcut>S3Copy</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[SELECT rdsadmin.rdsadmin_s3_tasks.download_from_s3(
+  p_bucket_name    =>  'omi-sapiens-policypro',
+  p_s3_prefix      =>  'Dump/apm_pw63_PD_SharedTables_2020_10_13_18_59.dmp',
+ 	p_directory_name =>  'DATA_PUMP_DIR')
+ AS TASK_ID FROM DUAL;
+SELECT rdsadmin.rdsadmin_s3_tasks.download_from_s3(
+  p_bucket_name    =>  'omi-sapiens-policypro',
+  p_s3_prefix      =>  'Dump/apm_PW69_PD_NonSharedTables_2020_10_13_18_59.dmp',
+  p_directory_name =>  'DATA_PUMP_DIR')
+ AS TASK_ID FROM DUAL;]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

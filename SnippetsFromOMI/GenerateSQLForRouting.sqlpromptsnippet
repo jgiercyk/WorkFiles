@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>GenerateSQLForRouting</Title>
+      <Shortcut>GenerateSQLForRouting</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[SELECT 'UPDATE Portal.[dbo].[AgencyUnderwriters] SET UnderwriterID = ' + CAST(UnderwriterID AS VARCHAR)
+       + ',UpdateDate = ''' + CONVERT(VARCHAR, GETDATE(), 121) + '''' + ',UpdatedBy = ' + '''AutoDataSync'''
+       + ' WHERE [SecondaryAgencyId] = ' + CAST([AgencyID] AS VARCHAR) + ' and [UnderwriterTypeId] = '
+       + CAST(UnderwriterTypeID AS VARCHAR)
+FROM [dba].[dbo].[IncorrectRouting] i
+WHERE Portal_Agent_No IS NOT NULL;
+
+/** INSERTS  **/
+
+SELECT Agent_No,'INSERT INTO portal.dbo.AgencyUnderwriters (SecondaryAgencyId, UnderwriterId, UnderwriterTypeId, CreateDate, CreatedBy)
+VALUES (' + CAST(AgencyID AS VARCHAR) + ',' + CAST(UnderwriterID AS VARCHAR) + ',' + CAST(UnderwriterTypeID AS VARCHAR)
+       + ',''' + CONVERT(VARCHAR, GETDATE(), 121) + '''' + ',' + '''AutoDataSync''' + ')'  'SQL'
+FROM dbo.IncorrectRouting
+WHERE Portal_Agent_No IS NULL
+ORDER BY [SQL]
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>MainframeRouting</Title>
+      <Shortcut>MainframeRouting</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[
+SELECT mm.AGENT_NO 'Agent_No',
+       mm.COMML_UW 'Name',
+       mm.COMML_UW_CODE 'Code',
+	   u.id 'UnderwriterID',
+	   'Commercial Lines Underwriter' 'Underwriter',
+	   '3' 'UnderwriterType',
+	   sa.id 'AgencyID',
+       m.NAME_1 'Agency'
+ --      *
+FROM PortalETL.dbo.MarketingMaster mm
+    JOIN PortalETL.dbo.Master m
+        ON m.AGENT_NO = mm.AGENT_NO
+	JOIN portal.dbo.Underwriters u ON u.code = mm.COMML_UW_CODE
+	JOIN portal.dbo.SecondaryAgencies sa ON m.AGENT_NO = sa.code
+WHERE mm.COMML_UW_CODE <> ''
+UNION
+SELECT mm.AGENT_NO,
+       mm.PERS_UW,
+       mm.PERS_UW_CODE,
+	   u.id 'UnderwriterID',
+	   'Personal Lines Underwriter',
+	   '1' 'UnderwriterType',
+	   sa.id 'AgencyID',
+       m.NAME_1
+--       *
+FROM PortalETL.dbo.MarketingMaster mm
+    JOIN PortalETL.dbo.Master m
+        ON m.AGENT_NO = mm.AGENT_NO
+	JOIN portal.dbo.Underwriters u ON u.code = mm.PERS_UW_CODE
+	JOIN portal.dbo.SecondaryAgencies sa ON m.AGENT_NO = sa.code
+WHERE mm.PERS_UW_CODE <> ''
+UNION
+SELECT mm.AGENT_NO,
+       '',
+       mm.COMML_UW1_CODE,
+	   u.id 'UnderwriterID',
+	   'Commercial Lines Underwriting Assistant',
+	   '4' 'UnderwriterType',
+	   sa.id 'AgencyID',
+       m.NAME_1
+--       *
+FROM PortalETL.dbo.MarketingMaster mm
+    JOIN PortalETL.dbo.Master m
+        ON m.AGENT_NO = mm.AGENT_NO
+	JOIN portal.dbo.Underwriters u ON u.code = mm.COMML_UW1_CODE
+	JOIN portal.dbo.SecondaryAgencies sa ON m.AGENT_NO = sa.code
+WHERE mm.COMML_UW1_CODE <> ''
+UNION
+SELECT mm.AGENT_NO,
+       '',
+       mm.PERS_UW1_CODE,
+	   u.id 'UnderwriterID',
+	   'Personal Lines Underwriting Assistant',
+	   '2' 'UnderwriterType',
+	   sa.id 'AgencyID',
+       m.NAME_1
+--       *
+FROM PortalETL.dbo.MarketingMaster mm
+    JOIN PortalETL.dbo.Master m
+        ON m.AGENT_NO = mm.AGENT_NO
+	JOIN portal.dbo.Underwriters u ON u.code = mm.PERS_UW1_CODE
+	JOIN portal.dbo.SecondaryAgencies sa ON m.AGENT_NO = sa.code
+WHERE mm.PERS_UW1_CODE <> ''
+UNION
+SELECT mm.AGENT_NO,
+       '',
+       mm.F_GRP_CODE,
+	   u.id 'UnderwriterID',
+	   'Farm/Agribusiness Underwriter',
+	   '5' 'UnderwriterType',
+	   sa.id 'AgencyID',
+       m.NAME_1
+ --      *
+FROM PortalETL.dbo.MarketingMaster mm
+    JOIN PortalETL.dbo.Master m
+        ON m.AGENT_NO = mm.AGENT_NO
+	JOIN portal.dbo.Underwriters u ON u.code = mm.F_GRP_CODE
+	JOIN portal.dbo.SecondaryAgencies sa ON m.AGENT_NO = sa.code
+WHERE mm.F_GRP_CODE <> ''
+UNION
+SELECT mm.AGENT_NO,
+       '',
+       mm.B_GRP_CODE,
+	   u.id 'UnderwriterID',
+	   'Farm/Agribusiness Underwriting Assistant',
+	   '6' 'UnderwriterType',
+	   sa.id 'AgencyID',
+       m.NAME_1
+ --      *
+FROM PortalETL.dbo.MarketingMaster mm
+    JOIN PortalETL.dbo.Master m
+        ON m.AGENT_NO = mm.AGENT_NO
+	JOIN portal.dbo.Underwriters u ON u.code = mm.B_GRP_CODE
+	JOIN portal.dbo.SecondaryAgencies sa ON m.AGENT_NO = sa.code
+WHERE mm.B_GRP_CODE <> ''
+ORDER BY mm.AGENT_NO
+
+]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

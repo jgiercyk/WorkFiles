@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>UpdateTestDataPolicyPro</Title>
+      <Shortcut>UpdateTestDataPolicyPro</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[USE [SmartClaim]
+GO
+
+UPDATE [dbo].[Claim]
+   SET [PolicyNo] = 'PHO302172'
+  WHERE [PolicyNo] = 'PP 320605'
+GO]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

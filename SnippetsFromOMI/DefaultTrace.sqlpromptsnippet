@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>DefaultTrace</Title>
+      <Shortcut>DefaultTrace</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[SELECT * FROM sys.trace_events WHERE name LIKE '%login%'
+WHERE trace_event_id BETWEEN 102 AND 111
+
+DECLARE @DefaultLog VARCHAR(150) = (SELECT CAST ((SELECT TOP 1 f.[value] FROM    sys.fn_trace_getinfo(NULL) f WHERE   f.property = 2 ) AS VARCHAR(300)))
+
+SELECT @DefaultLog
+
+SELECT * FROM  ::fn_trace_gettable(@DefaultLog, DEFAULT) tf
+JOIN sys.trace_events evt ON tf.eventclass = evt.trace_event_id
+WHERE textdata IS NOT NULL AND textdata LIKE '%UPDATE%' AND tf.EventClass IN (14,20)
+ORDER BY tf.starttime]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>usdovnnvpsfsdcwpousdcspnwposfsdcwpn</Title>
+      <Shortcut>usdovnnvpsfsdcwpousdcspnwposfsdcwpn</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[USE SmartClaim
+
+DECLARE	@OldPolicy VARCHAR(9) = 'NHC387835' ,
+@NewPolicy VarChar(9) = 'PHO601137'
+
+SELECT * FROM SmartClaim.dbo.Claim WHERE PolicyNo=@OldPolicy
+
+UPDATE SmartClaim.dbo.Claim SET PolicyNo=@NewPolicy WHERE PolicyNo=@OldPolicy
+
+SELECT * FROM SmartClaim.dbo.Claim WHERE PolicyNo=@NewPolicy]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

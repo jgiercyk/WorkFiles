@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>SSRSActiveReports</Title>
+      <Shortcut>SSRSActiveReports</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[SELECT runningjobs.computername, 
+            runningjobs.requestname,  
+            runningjobs.startdate, 
+            users.username,  
+           Datediff(s,runningjobs.startdate, Getdate()) / 60 AS    'Active Minutes' 
+FROM runningjobs 
+INNER JOIN users 
+ON runningjobs.userid = users.userid 
+ORDER BY runningjobs.startdate ]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>

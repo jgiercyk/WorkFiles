@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets>
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>FindImageRightDocs</Title>
+      <Shortcut>FindImageRightDocs</Shortcut>
+      <Description />
+      <Author />
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations />
+      <Code Language="sql"><![CDATA[SELECT   *
+		FROM docfolder d
+		JOIN ObjectLink ol ON d.docfolderid=ol.objectid
+		JOIN ObjectType ot ON ol.typeid=ot.typeid
+ 		JOIN Document do ON d.docfolderid=do.docfolderid]]></Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
