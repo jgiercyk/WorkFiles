@@ -1,8 +1,19 @@
 ﻿import-module dbatools
 import-module importexcel
 
-$server = 'mmcvsrover'  #<<<<<<<-------  Only variable needed is $server
+$server = 'aaa-ciadwdev01'  #<<<<<<<-------  Only variable needed is $server
 
+
+$dbaver = get-module -Name dbatools | select -ExpandProperty version | select -expandproperty major
+
+if ($dbaver -gt 1)
+    {
+      $dbaver
+      Set-DbatoolsInsecureConnection -SessionOnly  
+    }
+
+Set-DbatoolsConfig -FullName 'sql.connection.trustcert' -Value $true -Register
+$cred = get-credential
 
 ##########################################################################################################################################
 ##   Script creates directory "C:\Permissions Reports\" if it does not exist.  It writes output files to that directory                 ##
@@ -18,16 +29,16 @@ If (!(test-path $path))
         md $path
     }
 
-$databases = get-dbadatabase -SqlInstance $server | select -ExpandProperty Name
+$databases = get-dbadatabase -SqlInstance $server -SqlCredential $cred -debug | select -ExpandProperty Name
 
 
-$perms = Get-DbaDbRoleMember -SqlInstance $server | ?{$_.LoginType -eq 'WindowsUser'} | select * 
-$perms = $perms +  (Get-DbaDbRoleMember -SqlInstance $server | ?{$_.LoginType -eq 'WindowsGroup'} | select *)
+$perms = Get-Dbalogin -SqlInstance $server  -SqlCredential $cred | ?{$_.LoginType -ne 'SqlLogin'} | select * 
+$Groupperms = Get-Dbalogin -SqlInstance $server  -SqlCredential $cred | ?{$_.LoginType -eq 'WindowsGroup'} | select *
 
 Foreach($db in $databases)   ### Collect individual user assignments
 {
     try {
-           $dbperms = Get-DbaDbRoleMember -SqlInstance $server -Database $db | ?{$_.LoginType -in ('WindowsGroup','WindowsUser')} | select * 
+           $dbperms = Get-DbaDbRoleMember -SqlInstance $server -Database $db -SqlCredential $cred | ?{$_.UserName -in $perms.name} | select * 
         }
     catch {$ERROR[0]
             write-host $ERROR[0] -BackgroundColor Red
@@ -39,9 +50,9 @@ Foreach($db in $databases)   ### Collect individual user assignments
           }
     foreach($dbperm in $dbperms)
     {
-        IF($dbperm.Logintype -eq 'WindowsGroup')   ### Collect group members
+        IF($dbperm.Username -in $Groupperms.name)   ### Collect group members
         {
-            $members = invoke-sqlcmd -ServerInstance $server -query ("xp_logininfo @acctname = '" + $dbperm.Login + "', @option = 'members'")
+            $members = Invoke-DbaQuery -SqlInstance $server -SqlCredential $cred -query ("xp_logininfo @acctname = '" + $dbperm.Login + "', @option = 'members'") 
             foreach($member in $members)
                     {  
                     $newrec = New-Object -TypeName PSCustomObject
@@ -52,8 +63,6 @@ Foreach($db in $databases)   ### Collect individual user assignments
                     $newrec | Add-Member -Name 'Role' -value $dbperm.Role -MemberType NoteProperty
                     $newrec | Add-Member -Name 'UserName' -value $member.'mapped login name' -MemberType NoteProperty
                     $newrec | Add-Member -Name 'Login' -value $member.'permission path' -MemberType NoteProperty
-                    $newrec | Add-Member -Name 'IsSystemObject' -value $dbperm.IsSystemObject -MemberType NoteProperty
-                    $newrec | Add-Member -Name 'LoginType' -value 'PermissionsViaGroup' -MemberType NoteProperty
                         TRY
                         {
                             $perms = $perms + $newrec
@@ -76,7 +85,7 @@ Foreach($db in $databases)   ### Collect individual user assignments
 
 $perms | Export-Excel -Path $outputfile -WorksheetName 'All Databases' -AutoSize -AutoFilter -FreezeTopRow
 
-Get-DbaServerRoleMember -SqlInstance $server | Export-Excel -Path $outputfile -WorksheetName 'Sysadmins' -AutoSize -AutoFilter -FreezeTopRow   ### Collect and write administrator priv
+Get-DbaServerRoleMember -SqlInstance $server -SqlCredential $cred -debug | Export-Excel -Path $outputfile -WorksheetName 'Sysadmins' -AutoSize -AutoFilter -FreezeTopRow   ### Collect and write administrator priv
 
 foreach($db in $databases)
     {
@@ -85,3 +94,4 @@ foreach($db in $databases)
 
 
 #$perms | Out-GridView
+
